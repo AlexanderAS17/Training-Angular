@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   loadedPosts = [];
   showLoading: boolean = false;
   updateForm: FormGroup;
+  error = null;
 
   constructor(private http: HttpClient, private postServ: PostService) {}
 
@@ -40,7 +41,13 @@ export class AppComponent implements OnInit {
   }
 
   onClearPosts() {
-    // Send Http request
+    this.showLoading = true;
+    this.postServ.deletePosts().subscribe(
+      (data) => {
+        this.showLoading = false;
+        this.loadedPosts = [];
+      }
+    )
   }
 
   updForm(id: string, title: string, content: string){
@@ -57,7 +64,12 @@ export class AppComponent implements OnInit {
       posts => {
         this.showLoading = false;
         this.loadedPosts = posts;
+      },
+      error => {
+        console.log(error);
+        this.error = error;
       }
     )
   }
+
 }

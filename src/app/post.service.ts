@@ -37,6 +37,10 @@ export class PostService {
     )
   }
 
+  deletePosts(){
+    return this.http.delete(this.postUrl);
+  }
+
   fetchPost(){
     return this.http.get<{[key: string]: PostModule}>(this.postUrl)
     .pipe(

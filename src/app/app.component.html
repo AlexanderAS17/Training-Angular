@@ -101,6 +101,10 @@
     </div>
   </div>
   <div class="row">
+    <div class="alert alert-danger" role="alert" *ngIf="error">
+      <h3>Error Occur!</h3>
+      <p>{{error.message}}</p>
+    </div>
     <div class="spinner-border" style="width: 6rem; height: 6rem;" role="status" *ngIf="showLoading"></div>
     <span class="sr-only" *ngIf="showLoading">Loading...</span>
     <div class="col-xs-12 col-md-6 col-md-offset-3">

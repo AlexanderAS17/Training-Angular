@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PostModule } from './post/post.module';
-import { map } from 'rxjs';
+import { Subject, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,7 @@ import { map } from 'rxjs';
 export class PostService {
   endPoint: string = 'https://training-angular-294de-default-rtdb.asia-southeast1.firebasedatabase.app/';
   postUrl: string = this.endPoint + 'post.json';
+  errorHandling = new Subject<any>();
 
   constructor(private http: HttpClient) { }
 
@@ -16,6 +17,10 @@ export class PostService {
     this.http.post<{name: string}>(this.postUrl, postData).subscribe(
       (data) => {
         console.log(data);
+        this.errorHandling.next(null);
+      },
+      (error) => {
+        this.errorHandling.next(error);
       }
     )
   }

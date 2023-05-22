@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { Subscription, map } from 'rxjs';
 import { PostModule } from './post/post.module';
 import { PostService } from './post.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   showLoading: boolean = false;
   updateForm: FormGroup;
   error = null;
+  errorSub: Subscription;
 
   constructor(private http: HttpClient, private postServ: PostService) {}
 
@@ -24,7 +25,16 @@ export class AppComponent implements OnInit {
       'id': new FormControl(''),
       'title': new FormControl(''),
       'content': new FormControl('')
-    })
+    });
+    this.errorSub = this.postServ.errorHandling.subscribe(
+      error => {
+        this.error = error;
+      }
+    )
+  }
+
+  ngOnDestroy(){
+    this.errorSub.unsubscribe();
   }
 
   onCreatePost(postData: PostModule) {
@@ -64,10 +74,12 @@ export class AppComponent implements OnInit {
       posts => {
         this.showLoading = false;
         this.loadedPosts = posts;
+        this.error = null;
       },
       error => {
         console.log(error);
         this.error = error;
+        this.showLoading = false
       }
     )
   }
